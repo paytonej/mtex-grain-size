@@ -30,11 +30,7 @@ Modifications may be required to make it function for other versions of MATLAB o
 
 Download the mtex-grain-size repository, unzip it, move the contents to a folder of your choosing, and add that directory and its subfolders to your MATLAB path. 
 
-Then, within MATLAB, navigate to:
-
-the "Home" tab >> "Environment" section of the toolbar >> "Set Path" icon >> "Add with Subfolders..." >> *select the location where you downloaded the repository*
-
-Then save your MATLAB search path.
+Then, within MATLAB, navigate to the "Home" tab >> "Environment" section of the toolbar. Click on the "Set Path" icon. Select "Add with Subfolders...", then select the location where you unzipped the repository. Then click save to store your updated MATLAB search path.
 
 # Usage
 
