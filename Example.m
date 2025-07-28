@@ -1,76 +1,57 @@
 clear; clc; close all;
-% Example script to run all grain sizing functions in this suite. This is
-% based on EBSD data input as an *.ANG file.
-% MTEX can be either installed or be called in using the filepath options
-% below
+% Combined script to run all grain sizing methods on five EBSD scans,
+% saving results in a table and computing statistics on TPC method.
+% Based on EBSD data input as *.CTF files.
+% Requires MTEX toolbox.
 
-% %% Provide a path to MTEX
-% fpth = pwd;
-% mtex_pth = 'YOUR_MTEX_PATH';
-% cd(mtex_pth)
-% startup_mtex
-% cd(fpth);
+%% Set Up File Paths
+currentScriptPath = fileparts(mfilename('fullpath'));
+pname = fullfile(currentScriptPath, 'example data');
 
-%% Specify File Names
+% Preallocate arrays to store results
+numScans = 5;
+G_Abrams_all = zeros(numScans,1);
+G_Hilliard_all = zeros(numScans,1);
+G_HeynMLI_all = zeros(numScans,1);
+G_Saltikov_all = zeros(numScans,1);
+G_Jeffries_all = zeros(numScans,1);
+G_E2627_all = zeros(numScans,1);
+G_TPC_all = zeros(numScans,1);
+N_A_all = zeros(numScans,1);  % For stats (Triple Point Count grain density)
 
-% Path to files
-pname = 'C:\Users\dmtim\OneDrive - University of Cincinnati\UC Research\Complete Projects\Grain Size Measurement\GS Meas Paper\Code\Data';
-% Files to be imported
-fname = [pname '/DNV4849_Thread2_Left.ang'];
+% Loop over all scans
+for i = 1:numScans
+    fname = fullfile(pname, ['Example_Data' num2str(i) '.ctf']);
+    ebsd_collected = EBSD.load(fname, 'interface', 'ctf');
+    ebsd = ebsd_collected('indexed');
 
-%% Specify Crystal and Specimen Symmetries
+    [grains, ebsd.grainId] = calcGrains(ebsd, 'angle', 5*degree);
 
-% crystal symmetry
-CS = {... 
-  'notIndexed',...
-  crystalSymmetry('432', [4 4 4], 'mineral', 'Face Centered Cubic', 'color', [0.53 0.81 0.98]),...
-  crystalSymmetry('432', [5 5 5], 'mineral', 'Body Centered Cubic', 'color', [0.56 0.74 0.56])};
+    % Apply all grain sizing methods (no plots)
+    [G_Abrams, ~, ~, ~] = GrainSize_E112_Abrams(ebsd);
+    [G_Hilliard, ~, ~, ~] = GrainSize_E112_Hilliard(ebsd);
+    [G_HeynMLI, ~, ~, ~] = GrainSize_E112_HeynRandomLineMLI(ebsd);
+    [G_Saltikov, ~, ~] = GrainSize_E112_SaltikovPlanimetric(ebsd);
+    [G_Jeffries, ~, ~] = GrainSize_E112_JeffriesPlanimetric(ebsd);
+    [G_E2627, ~, ~, ~, ~, ~] = GrainSize_E2627_AsWritten(ebsd);
+    [G_TPC, A_T, N_A] = GrainSize_TriplePointCount(ebsd);
 
-% plotting convention
-setMTEXpref('xAxisDirection','east');
-setMTEXpref('zAxisDirection','intoPlane');
+    % Store results
+    G_Abrams_all(i) = G_Abrams;
+    G_Hilliard_all(i) = G_Hilliard;
+    G_HeynMLI_all(i) = G_HeynMLI;
+    G_Saltikov_all(i) = G_Saltikov;
+    G_Jeffries_all(i) = G_Jeffries;
+    G_E2627_all(i) = G_E2627;
+    G_TPC_all(i) = G_TPC;
+    N_A_all(i) = N_A; % For stats
+end
 
-%% Import the Data
+% Table combining all grain size results
+grainSizeTable = table((1:numScans)', G_Abrams_all, G_Hilliard_all, G_HeynMLI_all, ...
+    G_Saltikov_all, G_Jeffries_all, G_E2627_all, G_TPC_all, N_A_all, ...
+    'VariableNames', {'ScanNumber', 'Abrams', 'Hilliard', 'HeynMLI', ...
+    'Saltikov', 'Jeffries', 'E2627', 'TPC_GrainSize', 'TPC_N_A'});
 
-% create an EBSD variable containing the data
-ebsd_collected = EBSD.load(fname,CS,'interface','ang','convertEuler2SpatialReferenceFrame','setting 2');
-ebsd = ebsd_collected('indexed');
-
-% identify the grains
-[grains,ebsd.grainId] = calcGrains(ebsd,'angle',5*degree);
-
-%% Plot EBSD map [GS functions set to handle 1 phase, or 2 phase (FCC / BCC) structures]
-figure;
-% set the referece direction to Z
-ipfKey = ipfTSLKey(ebsd('face centered cubic'), 'antipodal');
-ipfKey.inversePoleFigureDirection = vector3d.Z;
-
-% compute the colors
-colors = ipfKey.orientation2color(ebsd('face centered cubic').orientations);
-plot(ebsd('face centered cubic'), colors); hold on
-
-% Plot IPF key if desired
-figure;
-plot(ipfKey)
-
-%% Apply grain sizing & plot if desired
-% Abrams
-[G_Abrams, abramsIntCount, abrams_lbar, abramsCircumference_tot] = GrainSize_E112_Abrams(ebsd('face centered cubic'), 'PlotResults'); % will produce a plotted represention of the grain sizing function
-
-% Hilliard
-[G_Hilliard, hilliardIntCount, hilliard_lbar, circumference] = GrainSize_E112_Hilliard(ebsd('face centered cubic'), 'PlotResults');
-
-% Heyn Mean Lineal Intercept
-[G_HeynMLI, lbar, n_HeynMLI, intercept_lengths] = GrainSize_E112_HeynRandomLineMLI(ebsd('face centered cubic'), 'PlotResults');
-
-% Saltikov
-[G_Saltikov, N_A_Saltikov, N_Saltikov] = GrainSize_E112_SaltikovPlanimetric(ebsd('face centered cubic'), 'PlotResults', 'exclude_twins'); % will merge twins
-
-% Jeffries
-[G_Jeffries, N_A_Jeffries, N_Jeffries] = GrainSize_E112_JeffriesPlanimetric(ebsd('face centered cubic'), 'PlotResults', 'exclude_twins');
-
-% ASTM E 2627 As Written
-[G_E2627, Abar, n_E2627, N_A_measured, avg_px_per_grain_before_threshold, areas] = GrainSize_E2627_AsWritten(ebsd('face centered cubic'), 'PlotResults');
-
-% Triple Point Count
-[G_TPC, A_T, N_A] = GrainSize_TriplePointCount(ebsd('face centered cubic'), 'PlotResults');
+%% Compute Field Statistics on TPC Grain Density (N_A)
+[xbar, s, CI95, RApct] = GrainSize_FieldStats(N_A_all);

@@ -1,6 +1,6 @@
 # mtex-grain-size
 
-*Functions for ASTM (and ISO) grain size characterization from electron backscatter diffraction (EBSD) data using the MTEX toolbox for MATLAB*[^1]
+*Functions for ASTM (and ISO) grain size characterization from electron backscatter diffraction (EBSD) data using the MTEX toolbox for MATLAB* [^1]
 
 This software package provides the following functions:
 
@@ -11,9 +11,9 @@ This software package provides the following functions:
 	+ Heyn
 	+ Abrams
 * Measurement of $N_A$ following the ASTM E 112 standard for the Hilliard method
-* Measurement of $\bar{A}$ following the ASTM E 2627 (EBSD-specific) standard (with 100 px minimum grain size)[^2]
+* Measurement of $\bar{A}$ following the ASTM E 2627 (EBSD-specific) standard (with 100 px minimum grain size) [^2]
 * Measurement of the as-large-as (ALA) grain size following ASTM E 930
-* Measurement of the grain size using the Triple Point Count method described by Van der Voort[^3]
+* Measurement of the grain size using the Triple Point Count method described by Van der Voort [^3]
 * Calculation of the field statistics following the reporting format described in ASTM E 112, Section 15
 * Conversion of $\bar{A}$, $\bar{l}$, and $N_A$ measured in microns, as obtained from the included functions, into ASTM $G$
 
@@ -28,7 +28,13 @@ Modifications may be required to make it function for other versions of MATLAB o
 
 # Installation
 
+Download the mtex-grain-size repository, unzip it, move the contents to a folder of your choosing, and add that directory and its subfolders to your MATLAB path. 
 
+Then, within MATLAB, navigate to:
+
+the "Home" tab >> "Environment" section of the toolbar >> "Set Path" icon >> "Add with Subfolders..." >> *select the location where you downloaded the repository*
+
+Then save your MATLAB search path.
 
 # Usage
 
@@ -80,21 +86,21 @@ N_A_list = [N_A_1, N_A_2, N_A_3, N_A_4, N_A_5]
 G = G_numgrain(N_A_bar)
 ```
 
-## Grain Size Function I/O
+## Grain size function I/O
 
 The following functions take as inputs just the EBSD data and a variable argument structure `varargin`:
 
 
-| Method           | Returns                                                                | $G$ function    | Input          |
-|------------------|------------------------------------------------------------------------|-----------------|----------------|
-| Abrams           | `G_PL, abramsIntCount, abrams_lbar, abramsCircumference_tot`           | `G_meanintl(u)` | `abrams_lbar`  |
-| Heyn MLI         | `G_L, lbar, n, intercept_lengths`                                      | `G_meanintl(u)` | `lbar`         |
-| Heyn PL          | `G_PL, MIC, intersection_count, nlines, total_line_length`             | `G_meanintl(u)` | `MIC`          |
-| Hilliard         |  `G_PL, hilliardIntCount, hilliard_lbar, circumference`                | `G_meanintl(u)` | `hilliard_lbar |
-| Jeffries         | `G_N, N_A, N`                                                          | `G_numgrain(u)` | `N_A`          |
-| Saltikov         | `G_N, N_A, N`                                                          | `G_numgrain(u)` | `N_A`          |
-| E 2627           | `G_A, Abar, n, N_A_measured, avg_px_per_grain_before_threshold, areas` | `G_meanbarA(u)` | `Abar`         |
-| TriplePointCount | `G, A_T, N_A`                                                          | `G_numgrain(u)` | `N_A`          |
+| Method           | Returns                                                                | $G$ function    | Input           |
+|------------------|------------------------------------------------------------------------|-----------------|-----------------|
+| Abrams           | `G_PL, abramsIntCount, abrams_lbar, abramsCircumference_tot`           | `G_meanintl(u)` | `abrams_lbar`   |
+| Heyn MLI         | `G_L, lbar, n, intercept_lengths`                                      | `G_meanintl(u)` | `lbar`          |
+| Heyn PL          | `G_PL, MIC, intersection_count, nlines, total_line_length`             | `G_meanintl(u)` | `MIC`           |
+| Hilliard         |  `G_PL, hilliardIntCount, hilliard_lbar, circumference`                | `G_meanintl(u)` | `hilliard_lbar` |
+| Jeffries         | `G_N, N_A, N`                                                          | `G_numgrain(u)` | `N_A`           |
+| Saltikov         | `G_N, N_A, N`                                                          | `G_numgrain(u)` | `N_A`           |
+| E 2627           | `G_A, Abar, n, N_A_measured, avg_px_per_grain_before_threshold, areas` | `G_meanbarA(u)` | `Abar`          |
+| TriplePointCount | `G, A_T, N_A`                                                          | `G_numgrain(u)` | `N_A`           |
 
 The `GrainSize_E2627_CustomMinGS` function takes an additional input argument for the minimum pixels per grain:
 
@@ -102,14 +108,13 @@ The `GrainSize_E2627_CustomMinGS` function takes an additional input argument fo
 G_A, Abar, n, N_A_measured, avg_px_per_grain_before_threshold, areas] = GrainSize_E2627_CustomMinGS(ebsd, min_px_per_grain, varargin)
 ```
 
-
-## ALA Characterization
+## ALA characterization
 
 `[G_largestGrain, volFraction] = GrainSize_E930_ALA(ebsd, G2)`
 
 # Example
 
-An example analysis script is provided in `Example.m`
+A more complete example analysis script is provided in the file `Example.m` in the repository.
 
 # Citation
 
