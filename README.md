@@ -6,7 +6,7 @@ Functions for ASTM grain size characterization using the MTEX toolbox for MATLAB
 
 If you publish with this software, please cite:
 
-- Timberlake, D. M., Evans, K. S., Payton, E. J. (2025). MTEX Grain Size Measurement [Computer software]
+- Timberlake, D. M., Evans, K. S., Payton, E. J. (2025). MTEX *Grain Size Measurement [Computer software]
 
 #Usage
 
