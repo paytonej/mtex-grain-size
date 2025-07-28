@@ -1,19 +1,19 @@
 # mtex-grain-size
 
-*Functions for ASTM and ISO grain size characterization using the MTEX toolbox for MATLAB*
+*Functions for ASTM (and ISO[^1]) grain size characterization using the MTEX toolbox for MATLAB*
 
 This software package provides the following functions:
 
-* Measurement of $\bar{A} following the ASTM E 112 standard for the following planimetric methods
+* Measurement of $\bar{A}$ following the ASTM E 112 standard for the following planimetric methods
 	 + Jeffries
 	 + Saltikov
-* Measurement of $\bar{l} following the ASTM E 112 standard for the following intercept methods
+* Measurement of $\bar{l}$ following the ASTM E 112 standard for the following intercept methods
 	+ Heyn
 	+ Abrams
 * Measurement of $N_A$ following the ASTM E 112 standard for the Hilliard method
-* Measurement of $\bar{A} following the ASTM E 2627 (EBSD-specific) standard (with 100 px minimum grain size) ^[See Evans et al, Metall Microsc Analysis (2024) for a critical analysis of the use of a minimum grain size threshold]
+* Measurement of $\bar{A}$ following the ASTM E 2627 (EBSD-specific) standard (with 100 px minimum grain size) [^2]
 * Measurement of the as-large-as (ALA) grain size following ASTM E 930
-* Measurement of the grain size using the Triple Point Count method described by Van der Voort ^[See Timberlake (2025) for a critical analysis of this method]
+* Measurement of the grain size using the Triple Point Count method described by Van der Voort [^3]
 * Calculation of the field statistics following the reporting format described in ASTM E 112
 * Conversion of $\bar{A}$m $\bar{l}$, and $N_A$ into ASTM $G$
 
@@ -36,6 +36,23 @@ Users may also find the following related publications of interest:
 
 This repository provides a collection of MATLAB scripts for grain size analysis, microstructure segmentation, and statistical evaluation of EBSD. The scripts are organized by function and naming convention for clarity.
 
+* Functions that begin with `G_` calculate the ASTM $G$ value from the parameter described after the underscore, with `meanbarA` referring to $\bar{A}$, `meanintl` referring to $\bar{l}$, and `numgrain` referring to $N_A$.
+* Functions that begin with `GrainSize` determine $\bar{A}$, $\bar{l}$, or $N_A$ (whichever is appropriate) according to the standard (when applicable) after the first underscore and then the method. Standards and method include:
+	+ ASTM E 112
+		- Abrams [`GrainSize_E112_Abrams`]
+		- Heyn (mean lineal intercept) [`GrainSize_E112_HeynRandomLineMLI`]
+		- Heyn (number of intercepts per line length) [`GrainSize_E112_HeynRandomLinePL`]
+		- Hilliard [`GrainSize_E112_Hilliard`]
+		- Jeffries [`GrainSize_E112_JeffriesPlanimetric`]
+		- Saltikov [`GrainSize_E112_SaltikovPlanimetric`]
+		- 
+	+ ASTM E 930 []`GrainSize_E930_ALA`]
+	+ ASTM E 2627
+		- As written in the standard [`GrainSize_E2627_AsWritten`]
+		- With an adjustable minimum grain size[^2] \(`GrainSize_E2627_CustomMinGS`\) 
+	+ Triple Point Count[^3] \(`GrainSize_TriplePointCount`\)
+* The function `FieldStats` follows Section 15 in ASTM E112 to calculate the mean values and standard errors on the mean for $\bar{A}$, $\bar{l}$, or $N_A$.
+
 # Requirements
 
 The code in this repository has been developed and tested on:
@@ -47,7 +64,7 @@ Modifications may be required to make it function for other versions of MATLAB o
 
 # Example
 
-Example.m
+An example analysis script is provided in `Example.m`
 
 # License
 
@@ -60,4 +77,24 @@ This program is free software: you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+# References
+
+[1] J. Friel, S. Wright, and S. Sitzman: Microsc Microanal, 2011, vol. 17, pp 838–9. https://doi.org/10.1017/S143192761100506X.
+[2] A.Deal: E2627-Practice for Determining Average Grain Size Using Electron Backscatter Diffraction (EBSD) in Fully Recrystallized Polycrystalline Materials, ASTM International, West Conshohocken, PA, 2013. https://www.astm.org/rr-e04-1008.html 
+[3] E04 Committee: Test Methods for Determining Average Grain Size, ASTM International. https://doi.org/10.1520/E0112-13R21.
+[4] G.F. Vander Voort: Interlaboratory Study to Establish Precision Statements for ASTM E112, Tests for Determining the Average Grain Size, ASTM International, West Conshohocken, PA, 1992.
+[5] E04 Committee: Practice for Determining Average Grain Size Using Electron Backscatter Diffraction (EBSD) in Fully Recrystallized Polycrystalline Materials, ASTM International, 2019. https://doi.org/10.1520/E2627-13R19.
+[6] E04 Committee: Test Methods for Estimating the Largest Grain Observed in a Metallographic Section (ALA Grain Size), ASTM International, 2019. https://doi.org/10.1520/E0930-18.
+[7] F. Bachmann, R. Hielscher, and H. Schaeben: Ultramicroscopy, 2011, vol. 111, pp 1720–33. https://doi.org/10.1016/j.ultramic.2011.08.002.
+[8] F. Bachmann, R. Hielscher, and H. Schaeben: Solid State Phenom., 2010, vol. 160, pp 63–8. https://doi.org/10.4028/www.scientific.net/SSP.160.63.
+[9] G.F. Vander Voort: Practical Metallography, 2014, vol. 51, pp 201–7. https://doi.org/10.3139/147.110291.
+
+
+---
+
+
+[^1]: ISO 13067 is similar to ASTM E 2627 measurements that follow either standard can be accomplished with the functions provided in this repository.
+[^2]: For a critical analysis of the use of a minimum grain size threshold in this method, see Evans et al, Metall Microsc Analysis (2024).
+[^3]: More information on this method can be found in G.F. Vander Voort: Practical Metallography, 2014, vol. 51, pp 201–7. For a comparison of this method with the more established methods in the ASTM standards, as well as an analysis of the strengths and weaknesses of triple point counts, see D.M. Timberlake, MS Thesis, University of Cincinnati, 2025.
 
