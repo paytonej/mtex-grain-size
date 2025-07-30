@@ -116,7 +116,7 @@ A more complete example analysis script is provided in the file `Example.m` in t
 
 If use this software in a publication, please cite whichever of the following is most appropriate:
 
-* D.M. Timberlake, K.S. Evans, and E.J. Payton: MTEX Grain Size Measurement, 2025. [Computer software]
+* D.M. Timberlake, K.S. Evans, and E.J. Payton: "mtex-grain-size -- Functions for ASTM (and ISO) grain size characterization from electron backscatter diffraction (EBSD) data using the MTEX toolbox for MATLAB," 2025. doi: https://doi.org/10.5281/zenodo.16541961 [Computer software]
 * K.S. Evans, D.M. Timberlake, P. Tyagi, V.M. Miller, and E.J. Payton: Metallogr. Microstruct. Anal., 2024, vol. 13, pp 966–82. https://doi.org/10.1007/s13632-024-01124-8.
 * D.M. Timberlake: MS Thesis, University of Cincinnati, 2025.
 
